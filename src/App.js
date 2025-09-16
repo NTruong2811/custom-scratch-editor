@@ -66,6 +66,7 @@ function App() {
   const [blocksJson, setBlocksJson] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
   const [character, setCharacter] = useState({ x: 250, y: 250, angle: 0 });
+  const [monitors, setMonitors] = useState(new Map());
 
   // Fixed images
   const characterImage = 'https://beta.aibuddy.vn/assets/dinosaur-DFjzxIj-.png';
@@ -80,6 +81,11 @@ function App() {
         if (sprite && sprite.visible) {
             setCharacter({ x: 250 + sprite.x, y: 250 - sprite.y, angle: sprite.direction - 90 });
         }
+    });
+
+    // Lắng nghe sự kiện cập nhật monitor
+    newVm.on('MONITORS_UPDATE', (monitorMap) => {
+        setMonitors(new Map(monitorMap));
     });
 
     newVm.loadProject(minimalProjectJson).then(() => { newVm.start(); });
@@ -119,8 +125,10 @@ function App() {
             character={character} 
             characterImage={characterImage}
             backgroundImage={backgroundImage}
+            monitors={monitors}
           />
         </div>
+        {/* Checkboxes cũ đã được xóa khỏi đây */}
         <button onClick={handleRunCode} className="control-button run-button" disabled={isRunning || !vm}>
           {isRunning ? 'Running...' : 'Run Code'}
         </button>

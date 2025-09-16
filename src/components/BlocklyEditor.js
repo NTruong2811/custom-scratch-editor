@@ -1,5 +1,3 @@
-// src/components/BlocklyEditor.js
-
 import React, { useEffect, useRef } from 'react';
 import Blockly from 'scratch-blocks';
 
@@ -11,10 +9,28 @@ const toolboxXml = `
   <category name="Motion" colour="#4C97FF" secondaryColour="#3373CC">
     <block type="motion_movesteps"><value name="STEPS"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>
     <block type="motion_turnright"><value name="DEGREES"><shadow type="math_number"><field name="NUM">15</field></shadow></value></block>
+    <block type="motion_setrotationstyle">
+        <value name="STYLE">
+            <shadow type="text">
+                <field name="TEXT">left-right</field>
+            </shadow>
+        </value>
+    </block>
+    
+    // --- CÁC KHỐI MỚI ĐƯỢC THÊM VÀO ---
+    <block type="motion_xposition"></block>
+    <block type="motion_yposition"></block>
+    <block type="motion_direction"></block>
+    // ------------------------------------
+
   </category>
   <category name="Looks" colour="#9966FF" secondaryColour="#774DCB">
     <block type="looks_say"><value name="MESSAGE"><shadow type="text"><field name="TEXT">Hello!</field></shadow></value></block>
   </category>
+  
+  // --- THÊM DANH MỤC "MY BLOCKS" ---
+  <category name="My Blocks" colour="#FF6680" secondaryColour="#FF4D6A" custom="PROCEDURE"></category>
+  // ---------------------------------
 </xml>
 `;
 
