@@ -81,7 +81,6 @@ const BlocklyEditor = ({ onWorkspaceChangeJson }) => {
   useEffect(() => {
     if (blocklyDiv.current && !workspace.current) {
       workspace.current = Blockly.inject(blocklyDiv.current, {
-        // --- THAY ĐỔI DUY NHẤT Ở ĐÂY ---
         // Đường dẫn này trỏ đến thư mục /public/media/
         media: 'media/', 
         // ------------------------------------
