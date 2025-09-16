@@ -78,43 +78,65 @@ const BlocklyEditor = ({ onWorkspaceChangeJson, vm }) => {
     return blockData;
   };
 
+  // Effect 1: Chỉ chạy một lần để khởi tạo workspace
   useEffect(() => {
-    if (blocklyDiv.current && !workspace.current) {
+    if (blocklyDiv.current) {
       workspace.current = Blockly.inject(blocklyDiv.current, {
         media: 'media/', 
         toolbox: toolboxXml,
         zoom: { controls: true, wheel: true, startScale: 0.75 },
         sounds: false
       });
-
-      workspace.current.addChangeListener((event) => {
-        // Xử lý sự kiện khi người dùng tick vào checkbox monitor
-        if (vm && event.type === Blockly.Events.BLOCK_CHANGE && event.element === 'monitor') {
-          // Thông báo cho VM biết rằng một block cần được giám sát (hoặc bỏ giám sát)
-          vm.setBlockMonitored(event.blockId, event.newValue);
-          return;
-        }
-
-        if (event.type === Blockly.Events.UI || event.isUiEvent) {
-          return;
-        }
-        if (workspace.current && onWorkspaceChangeJson) {
-          try {
-            const blocks = {};
-            const allBlocks = workspace.current.getAllBlocks(false);
-            allBlocks.forEach(block => {
-              blocks[block.id] = blockToSb3(block);
-            });
-            onWorkspaceChangeJson({ blocks });
-          } catch (error) {
-            console.error('Error converting blocks:', error);
-          }
-        }
-      });
-      
-      // ... (phần code load XML mặc định không đổi)
     }
-  }, [onWorkspaceChangeJson, vm]);
+    return () => {
+      if (workspace.current) {
+        workspace.current.dispose();
+      }
+    }
+  }, []);
+
+  // Effect 2: Chạy mỗi khi `vm` thay đổi để kết nối chúng lại với nhau
+  useEffect(() => {
+    const customListener = (event) => {
+        if (event.type === Blockly.Events.UI || event.isUiEvent || event.type === 'Bubble') {
+            return;
+        }
+        if (onWorkspaceChangeJson) {
+            try {
+                const blocks = {};
+                const allBlocks = workspace.current.getAllBlocks(false);
+                allBlocks.forEach(block => {
+                    blocks[block.id] = blockToSb3(block);
+                });
+                onWorkspaceChangeJson({ blocks });
+            } catch (error) {
+                console.error('Error converting blocks:', error);
+            }
+        }
+    };
+
+    if (vm && workspace.current) {
+
+      console.log(vm);
+      
+
+      // THÊM ĐẦY ĐỦ CÁC LISTENER CẦN THIẾT TỪ VM
+      workspace.current.addChangeListener(vm.blockListener);
+      workspace.current.addChangeListener(vm.flyoutBlockListener);
+      workspace.current.addChangeListener(vm.monitorBlockListener); // Listener quan trọng nhất!
+
+      // Thêm listener tùy chỉnh của chúng ta
+      workspace.current.addChangeListener(customListener);
+    }
+
+    // Cleanup: Gỡ listener tùy chỉnh ra khi effect chạy lại hoặc component unmount
+    return () => {
+        if (workspace.current) {
+            workspace.current.removeChangeListener(customListener);
+        }
+    }
+  }, [vm, onWorkspaceChangeJson]);
+
 
   return <div ref={blocklyDiv} style={{ height: '100%', width: '100%' }} />;
 };

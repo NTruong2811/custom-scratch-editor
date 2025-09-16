@@ -22,8 +22,7 @@
     "start": "npm run copy-assets && react-scripts start",
     "build": "npm run copy-assets && react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "copy-assets": "cpy node_modules/scratch-blocks/media public/static/blocks-media"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -42,8 +41,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "cpy-cli": "^6.0.0"
   }
 }

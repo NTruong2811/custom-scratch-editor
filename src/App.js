@@ -88,6 +88,8 @@ function App() {
 
     // Lắng nghe sự kiện cập nhật monitor
     newVm.on('MONITORS_UPDATE', (monitorMap) => {
+              console.log('Sự kiện MONITORS_UPDATE đã được kích hoạt!', monitorMap);
+
         setMonitors(new Map(monitorMap));
     });
 

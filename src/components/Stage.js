@@ -1,6 +1,7 @@
 // src/components/Stage.js
 
 import React from 'react';
+import './Stage.css'
 
 // Hàm helper để dịch opcode thành tên hiển thị tiếng Việt
 const getMonitorLabel = (opcode) => {
@@ -64,7 +65,7 @@ const Stage = ({ character, characterImage, backgroundImage, monitors }) => {
     const monitorList = monitors ? Array.from(monitors.values()) : [];
 
     return (
-        <div className="stage-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <div className="stage" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <img
                 src={characterImage}
                 alt="character"
