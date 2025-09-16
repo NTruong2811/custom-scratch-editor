@@ -65,6 +65,7 @@ function App() {
   const [vm, setVm] = useState(null);
   const [blocksJson, setBlocksJson] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
+  // State character x,y tính từ tâm của Stage (500x500), không phải (0,0) ở góc
   const [character, setCharacter] = useState({ x: 250, y: 250, angle: 0 });
   const [monitors, setMonitors] = useState(new Map());
 
@@ -79,6 +80,8 @@ function App() {
     newVm.on('targetsUpdate', (data) => {
         const sprite = data.targetList.find(target => !target.isStage);
         if (sprite && sprite.visible) {
+            // Căn chỉnh tọa độ: tâm stage (250, 250) + tọa độ của sprite
+            // Tọa độ Y của Scratch ngược với tọa độ của CSS
             setCharacter({ x: 250 + sprite.x, y: 250 - sprite.y, angle: sprite.direction - 90 });
         }
     });
@@ -117,7 +120,11 @@ function App() {
   return (
     <div className="app-container">
       <div className="editor-container">
-        <BlocklyEditor onWorkspaceChangeJson={setBlocksJson} />
+        {/* Truyền vm xuống cho BlocklyEditor */}
+        <BlocklyEditor 
+          vm={vm} 
+          onWorkspaceChangeJson={setBlocksJson} 
+        />
       </div>
       <div className="controls-container">
         <div className="stage-wrapper">
@@ -128,7 +135,6 @@ function App() {
             monitors={monitors}
           />
         </div>
-        {/* Checkboxes cũ đã được xóa khỏi đây */}
         <button onClick={handleRunCode} className="control-button run-button" disabled={isRunning || !vm}>
           {isRunning ? 'Running...' : 'Run Code'}
         </button>
